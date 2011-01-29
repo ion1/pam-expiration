@@ -44,7 +44,7 @@ maybeChangeExpiration user = do
   when (length entries /= 1) 
        (error $ "Expected exactly one shadow entry (user " ++ user ++ ")")
 
-  either (noticeM rootLoggerName
+  either (debugM rootLoggerName
           . showString "Not changing expire date of user "
           . showString user . showString ": ")
          (changeExpiration user)
