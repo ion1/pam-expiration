@@ -14,10 +14,12 @@ import System.Process
 import Text.ParserCombinators.Parsec (parse)
 
 expireDays = 180
+logLevel   = DEBUG
 
 main = do
   syslog <- openlog "pam-expiration" [PID] AUTH DEBUG
-  updateGlobalLogger rootLoggerName $ addHandler syslog
+  updateGlobalLogger rootLoggerName
+                     (setLevel logLevel . addHandler syslog)
 
   main' `catch` (\e -> errorM rootLoggerName (show e) >> exitFailure)
 
