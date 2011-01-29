@@ -42,11 +42,11 @@ maybeChangeExpiration user = do
   now     <- getPOSIXTime
 
   when (length entries /= 1) 
-       (error $ "Expected exactly one shadow entry (user " ++ user ++ ")")
+       (error $ "Expected exactly one shadow entry (user " ++ show user ++ ")")
 
   either (debugM rootLoggerName
           . showString "Not changing expire date of user "
-          . showString user . showString ": ")
+          . shows user . showString ": ")
          (changeExpiration user)
          (newExpiration now expireDays $ head entries)
 
@@ -55,7 +55,7 @@ maybeChangeExpiration user = do
 
 changeExpiration user n = do
   noticeM rootLoggerName
-          ("Setting expire date of user " ++ user ++ " as " ++ show n)
+          ("Setting expire date of user " ++ show user ++ " as " ++ show n)
 
   readProcess "/usr/bin/chage" ["--expiredate", show n, "--", user] ""
   return ()
