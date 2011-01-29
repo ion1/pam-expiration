@@ -12,8 +12,8 @@ newExpiration now expireDays entry = do
   -- Nothing if expiration is not enabled for the user.
   curExpireDate <- expireDate entry
 
-  when (curExpireDate == newExpireDate) $ fail "No change needed"
   when (curExpireDate < today)          $ fail "Account expired"
+  when (curExpireDate == newExpireDate) $ fail "No change needed"
 
   return newExpireDate
 
