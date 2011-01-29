@@ -7,6 +7,7 @@ import Control.Applicative
 import Control.Monad
 import Data.Time.Clock.POSIX (getPOSIXTime)
 import System.Environment
+import System.Exit
 import System.Log.Handler.Syslog
 import System.Log.Logger
 import System.Process
@@ -18,10 +19,7 @@ main = do
   syslog <- openlog "pam-expiration" [PID, PERROR] AUTH INFO
   updateGlobalLogger rootLoggerName $ addHandler syslog
 
-  main' `catch` logAndPropagateError
-
-  where
-    logAndPropagateError = liftM2 (>>) (errorM rootLoggerName . show) ioError
+  main' `catch` (\e -> errorM rootLoggerName (show e) >> exitFailure)
 
 main' = do
   args    <- getArgs
