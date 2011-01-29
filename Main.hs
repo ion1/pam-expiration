@@ -16,7 +16,7 @@ import Text.ParserCombinators.Parsec (parse)
 expireDays = 180
 
 main = do
-  syslog <- openlog "pam-expiration" [PID] AUTH INFO
+  syslog <- openlog "pam-expiration" [PID] AUTH DEBUG
   updateGlobalLogger rootLoggerName $ addHandler syslog
 
   main' `catch` (\e -> errorM rootLoggerName (show e) >> exitFailure)
