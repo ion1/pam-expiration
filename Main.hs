@@ -44,10 +44,11 @@ maybeChangeExpiration user = do
   when (length entries /= 1) 
        (error $ "Expected exactly one shadow entry (user " ++ user ++ ")")
 
-  let entry = head entries
-  maybe (noticeM rootLoggerName ("Not changing expire date of user " ++ user))
-        (changeExpiration user)
-        (newExpiration now expireDays entry)
+  either (noticeM rootLoggerName
+          . showString "Not changing expire date of user "
+          . showString user . showString ": ")
+         (changeExpiration user)
+         (newExpiration now expireDays $ head entries)
 
   where
     eitherError = either (ioError . userError . show) return
