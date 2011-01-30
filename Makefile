@@ -4,7 +4,7 @@ binary := pam-expiration
 
 .PHONY : all
 all :
-	cd src && ghc -o '../$(binary)' --make Main
+	ghc -isrc -o '$(binary)' --make Main
 
 .PHONY : clean
 clean ::
