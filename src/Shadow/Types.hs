@@ -23,6 +23,8 @@ module Shadow.Types
   )
 where
 
+import Control.Applicative
+import Control.Monad
 import Data.List (intercalate)
 
 data ShadowEntry = ShadowEntry { loginName    :: String
@@ -35,14 +37,14 @@ data ShadowEntry = ShadowEntry { loginName    :: String
                                , expireDate   :: Maybe Integer
                                , reserved     :: String
                                }
-  deriving Show
+  deriving (Eq, Show)
 
-passwordEnabled entry =
-  case password entry of
-    '*':_ -> False  -- Disabled.
-    '!':_ -> False  -- Disabled.
-    ""    -> False  -- Empty.
-    _     -> True
+passwordEnabled =
+  liftM2 (&&) (null . deleteValidChars . password)
+              (not . null . password)
+  where
+    deleteValidChars = filter (not . (`elem` validChars))
+    validChars = ['a'..'z'] ++ ['A'..'Z'] ++ ['0'..'9'] ++ "./$"
 
 shadowEntryToString entry = intercalate ":" fields
   where
